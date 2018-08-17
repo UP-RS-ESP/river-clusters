@@ -49,3 +49,10 @@ plt.subplots_adjust(left=0.15)
 #plt.show()
 plt.savefig('/home/clubb/Bitbucket/hrt_workshop/figures/synthetic_sa_plots.png', dpi=300)
 plt.clf()
+
+def two_profiles_example():
+    """
+    Make a SA plot with two different samples as a diagram to show an
+    example of the clustering
+    """
+    
