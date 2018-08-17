@@ -492,7 +492,8 @@ def ClusterProfilesDrainageArea(df, profile_len=100, step=2, method='ward'):
             for x in range(len(dts)):
                 if dts[x] == 0:
                     l += 1
-            new_tsi, new_tsj = new_tsi[:l], new_tsj[:l]
+            if l > 0:
+                new_tsi, new_tsj = new_tsi[:l], new_tsj[:l]
             #print ("LEN OF UNIQUE SECTION: ", len(new_tsi))
             # take the log of them to test the correlation effect
             #log_tsi = np.log(new_tsi)
@@ -1117,7 +1118,7 @@ if __name__ == '__main__':
     else:
         # read in the original csv
         df = pd.read_csv(DataDirectory+args.fname_prefix+'_all_tribs.csv')
-        #df = RemoveProfilesWithShortUniqueSection(df, args.profile_len)
+        #git stdf = RemoveProfilesWithShortUniqueSection(df, args.profile_len)
         # calculate the slope
         df = CalculateSlope(df, args.slope_window)
         df.to_csv(DataDirectory+args.fname_prefix+'_slopes.csv', index=False)

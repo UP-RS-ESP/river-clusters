@@ -26,4 +26,4 @@ for i in range(n):
 
 plt.xlabel('Time (e.g. hours)', fontsize=16)
 plt.ylabel('Some kind of metric', fontsize=16)
-plt.savefig('/home/s0923330/Bitbucket/HRT_workshop/figures/random_ts.png', dpi=300)
+plt.savefig('/home/clubb/Bitbucket/hrt_workshop/figures/random_ts.png', dpi=300, transparent=True)

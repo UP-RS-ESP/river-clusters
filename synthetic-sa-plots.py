@@ -47,7 +47,7 @@ plt.xscale('log')
 plt.yscale('log')
 plt.subplots_adjust(left=0.15)
 #plt.show()
-plt.savefig('/home/clubb/Bitbucket/hrt_workshop/figures/synthetic_sa_plots.png', dpi=300)
+plt.savefig('/home/clubb/Bitbucket/hrt_workshop/figures/synthetic_sa_plots.png', dpi=300, transparent=True)
 plt.clf()
 
 def two_profiles_example():
