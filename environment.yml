@@ -72,7 +72,7 @@ dependencies:
   - proj4=4.9.3=h470a237_7
   - pthread-stubs=0.4=h470a237_1
   - pyparsing=2.2.0=py_1
-  - pyproj=1.9.5.1=py36h508ed2a_3
+  - pyproj=1.9.5.1=py36h508ed2a_5
   - pyqt=5.6.0=py36h8210e8a_7
   - python=3.6.6=h5001a0f_0
   - python-dateutil=2.7.3=py_0
@@ -110,5 +110,5 @@ dependencies:
   - numpy-base=1.15.0=py36h3dfced4_0
   - scipy=1.1.0=py36hc49cb51_0
   - util-linux=2.21=0
-prefix: /home/fiona/miniconda3/envs/river-clusters
+prefix: /home/clubb/miniconda3/envs/river-clusters
 
