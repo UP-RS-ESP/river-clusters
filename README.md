@@ -13,7 +13,6 @@ sudo apt-get install -y libfftw3-dev
 sudo apt-get install -y cmake
 ```
 Then make a directory for LSDTopoTools and clone the LSDTopoTools2 git repository:
-
 ```
 cd ~
 mkdir LSDTopoTools 
