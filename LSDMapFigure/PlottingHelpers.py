@@ -188,9 +188,9 @@ def MapFigureSizer(figure_width_inches,aspect_ratio, cbar_loc = "None", title = 
             figure_height_inches = figure_height_inches+title_height
 
         fig_size_inches = [figure_width_inches,figure_height_inches]
-
-        print("cbar_left: "+str(cbar_left_inches)+" map left: "+str(map_left_inches))
-        print("cbar_bottom: "+str(cbar_bottom_inches)+ " map bottom: "+str(map_bottom_inches))
+        #
+        # print("cbar_left: "+str(cbar_left_inches)+" map left: "+str(map_left_inches))
+        # print("cbar_bottom: "+str(cbar_bottom_inches)+ " map bottom: "+str(map_bottom_inches))
 
 
         map_axes = [map_left_inches/figure_width_inches,
@@ -203,7 +203,7 @@ def MapFigureSizer(figure_width_inches,aspect_ratio, cbar_loc = "None", title = 
                     cbar_width/figure_height_inches]
 
     else:
-        print("No colourbar")
+        #print("No colourbar")
 
         map_left_inches = whitespace_padding+map_text_width
         map_right_inches = figure_width_inches-whitespace_padding
@@ -227,12 +227,12 @@ def MapFigureSizer(figure_width_inches,aspect_ratio, cbar_loc = "None", title = 
         cbar_axes = None
 
 
-    print("The figure size is: ")
-    print(fig_size_inches)
-    print("Map axes are:")
-    print(map_axes)
-    print("cbar_axes are:")
-    print(cbar_axes)
+    #print("The figure size is: ")
+    #print(fig_size_inches)
+    #print("Map axes are:")
+    # print(map_axes)
+    # print("cbar_axes are:")
+    # print(cbar_axes)
     return fig_size_inches, map_axes, cbar_axes
 
 

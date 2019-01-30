@@ -364,7 +364,7 @@ def GetTicksForUTMNoInversion(FileName,x_max,x_min,y_max,y_min,n_target_tics,min
 
     CellSize,XMin,XMax,YMin,YMax = LSDMap_IO.GetUTMMaxMin(FileName)
     NDV, xsize, ysize, GeoT, Projection, DataType = LSDMap_IO.GetGeoInfo(FileName)
-    
+
     # take min and max specified as input arguments (MDH addition, these arguments were not otherwise used).
     Extents = [x_min,x_max,y_min,y_max]
     if None not in Extents:
@@ -372,7 +372,7 @@ def GetTicksForUTMNoInversion(FileName,x_max,x_min,y_max,y_min,n_target_tics,min
       XMax = x_max
       YMin = y_min
       YMax = y_max
-      
+
     #print("Getting ticks. YMin: "+str(YMin)+" and YMax: "+str(YMax))
 
     xmax_UTM = XMax
@@ -406,7 +406,7 @@ def GetTicksForUTMNoInversion(FileName,x_max,x_min,y_max,y_min,n_target_tics,min
     xmin_UTM = float(str_xmin)
     ymin_UTM = float(str_ymin)
 
-    print("minimum values are x: "+str(xmin_UTM)+ " and y: "+str(ymin_UTM))
+    #print("minimum values are x: "+str(xmin_UTM)+ " and y: "+str(ymin_UTM))
 
     n_digx = str_xmin.__len__()
     n_digy = str_ymin.__len__()

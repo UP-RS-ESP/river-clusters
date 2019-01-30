@@ -10,6 +10,7 @@ from LSDPlottingTools import LSDMap_VectorTools as VT
 from LSDPlottingTools import LSDMap_GDALIO as IO
 from LSDPlottingTools import LSDMap_BasicManipulation as BM
 from LSDMapFigure import PlottingRaster
+from LSDMapFigure.PlottingRaster import MapFigure
 import pandas as pd
 from shapely.geometry import shape, Polygon
 from descartes.patch import PolygonPatch
@@ -18,6 +19,7 @@ import os
 from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 import matplotlib.cm as cm
 from matplotlib import rcParams
+import LSDPlottingTools as LSDP
 
 # Set up fonts for plots
 label_size = 12
@@ -38,9 +40,7 @@ def PlotElevationWithClusters(DataDirectory, OutDirectory, fname_prefix, stream_
 
     Author: FJC
     """
-    import LSDPlottingTools as LSDP
-    from LSDMapFigure.PlottingRaster import MapFigure
-
+    print("I'm plotting the elevation with channels coloured by cluster")
     df = pd.read_csv(DataDirectory+fname_prefix+'_all_tribs.csv')
     cluster_df = pd.read_csv(OutDirectory+fname_prefix+'_profiles_clustered_SO{}.csv'.format(stream_order))
 
@@ -74,7 +74,7 @@ def PlotElevationWithClusters(DataDirectory, OutDirectory, fname_prefix, stream_
         ClusteredPoints = LSDP.LSDMap_PointData(this_df, data_type = "pandas", PANDEX = True)
         MF.add_point_data(ClusteredPoints,show_colourbar="False",zorder=100, unicolor=this_colour,manual_size=2)
 
-    MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_elev_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, axis_style='Thin') # Save the figure
+    MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_elev_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, axis_style='Thin', transparent=True) # Save the figure
 
 def PlotHillshadewithClusters(DataDirectory, OutDirectory, fname_prefix,stream_order=1):
         """
@@ -88,6 +88,8 @@ def PlotHillshadewithClusters(DataDirectory, OutDirectory, fname_prefix,stream_o
         """
         import LSDPlottingTools as LSDP
         from LSDMapFigure.PlottingRaster import MapFigure
+
+        print("I'm plotting a shaded relief map with the channels coloured by cluster")
 
         df = pd.read_csv(DataDirectory+fname_prefix+'_all_tribs.csv')
         cluster_df = pd.read_csv(OutDirectory+fname_prefix+'_profiles_clustered_SO{}.csv'.format(stream_order))
@@ -119,7 +121,7 @@ def PlotHillshadewithClusters(DataDirectory, OutDirectory, fname_prefix,stream_o
             ClusteredPoints = LSDP.LSDMap_PointData(this_df, data_type = "pandas", PANDEX = True)
             MF.add_point_data(ClusteredPoints,show_colourbar="False",zorder=100, unicolor=this_colour,manual_size=3)
 
-        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_hs_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False) # Save the figure
+        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_hs_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, transparent=True) # Save the figure
 
 def PlotLithologyWithClusters(DataDirectory, OutDirectory, fname_prefix, stream_order=1, shapefile_name = 'geol.shp', geol_field = 'geol'):
         """
@@ -174,7 +176,7 @@ def PlotLithologyWithClusters(DataDirectory, OutDirectory, fname_prefix, stream_
             ClusteredPoints = LSDP.LSDMap_PointData(this_df, data_type = "pandas", PANDEX = True)
             MF.add_point_data(ClusteredPoints,show_colourbar="False",zorder=100, unicolor=this_colour,manual_size=3)
 
-        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_lith_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False) # Save the figure
+        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_lith_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, transparent=True) # Save the figure
 
 
 def PlotRasterLithologyWithClusters(DataDirectory, OutDirectory, fname_prefix, stream_order=1, geol_raster = 'geol'):
@@ -228,7 +230,7 @@ def PlotRasterLithologyWithClusters(DataDirectory, OutDirectory, fname_prefix, s
             ClusteredPoints = LSDP.LSDMap_PointData(this_df, data_type = "pandas", PANDEX = True)
             MF.add_point_data(ClusteredPoints,show_colourbar="False",zorder=100, unicolor=this_colour,manual_size=2.5)
 
-        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_lith_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False) # Save the figure
+        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_lith_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, transparent=True) # Save the figure
 
 def PlotRasterLithology(DataDirectory, fname_prefix, geol_raster = 'geol'):
         """
@@ -265,7 +267,7 @@ def PlotRasterLithology(DataDirectory, fname_prefix, geol_raster = 'geol'):
         print("The geology raster is"+LithName)
         MF.add_drape_image(LithName, DataDirectory, colourmap=plt.cm.jet, alpha=0.5, show_colourbar = False, discrete_cmap=True, cbar_type=int,mask_value=0)
 
-        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = DataDirectory+fname_prefix+'_lith.png', FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False) # Save the figure
+        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = DataDirectory+fname_prefix+'_lith.png', FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, transparent=True) # Save the figure
 
 def ReadBasinPolygons(DataDirectory, OutDirectory, raster_name):
     """
@@ -345,7 +347,53 @@ def PlotBasinsWithHillshade(DataDirectory, OutDirectory, fname_prefix, stream_or
         #print(polygons)
         # for each
 
-    plt.savefig(OutDirectory+fname_prefix+'_hs_basins_SO{}.png'.format(stream_order), FigFormat='png', dpi=500)
+    plt.savefig(OutDirectory+fname_prefix+'_hs_basins_SO{}.png'.format(stream_order), FigFormat='png', dpi=500, transparent=True)
+
+def PlotKsnFromSlopeArea(DataDirectory, fname_prefix, theta=0.45, cbar_loc='right', custom_cbar_min_max = []):
+    """
+    Make a plot of the slope area data with a fixed concavity
+    """
+    import numpy as np
+
+    print("Calculating ksn...")
+    # read the csv and get some info
+    df = pd.read_csv(DataDirectory+fname_prefix+"_slopes.csv")
+
+    # now force a fit of ks based on this concavity
+    area = df['drainage_area'].values
+    slope = df['slope'].values
+
+    ksn = slope/(area**(-theta))
+    df['ksn'] = ksn
+    print(np.max(ksn), np.min(ksn))
+    print(ksn)
+
+    df.to_csv(DataDirectory+fname_prefix+'_ksn.csv', index=False)
+
+    # set figure sizes based on format
+    fig_width_inches = 6
+
+    # some raster names
+    raster_ext = '.bil'
+    BackgroundRasterName = fname_prefix+raster_ext
+    HSName = fname_prefix+'_hs'+raster_ext
+
+    if not os.path.isfile(DataDirectory+HSName):
+        # make a hillshade
+        BM.GetHillshade(DataDirectory+BackgroundRasterName, DataDirectory+HSName)
+
+    # create the map figure
+    MF = MapFigure(HSName, DataDirectory,coord_type="UTM", cbar_loc='right', font_size=16)
+    #MF.add_drape_image(BackgroundRasterName,DataDirectory,colourmap = 'gray', alpha=0.5)
+
+    # add the ksn data
+    ChannelPoints = LSDP.LSDMap_PointData(df, data_type = "pandas", PANDEX = True)
+    MF.add_point_data(ChannelPoints, this_colourmap='viridis', column_for_plotting='ksn', colour_log=True,zorder=100, show_colourbar = True, colourbar_location='bottom', font_size=24, colorbarlabel = "log$_{10}(k_{sn})", manual_size = 1.5, colour_manual_scale = [0,1.8])
+    #plt.show()
+
+    MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = DataDirectory+fname_prefix+'_ksn.png', FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, axis_style='Thin', transparent=True) # Save the figure
+    plt.clf()
+
 
 if __name__ == '__main__':
 

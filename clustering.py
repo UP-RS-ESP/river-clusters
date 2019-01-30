@@ -254,7 +254,7 @@ def GetProfilesByStreamOrder(DataDirectory, fname_prefix, df,step=2,slope_window
             this_df = so_df[so_df['id'].isin(these_ids)]  # filter the SO dataframe to only these IDs
             # now find the ID of the longest one
             longest_ids.append(this_df.loc[this_df['distance_from_outlet'].idxmax()]['id'])
-        print(longest_ids)
+        #print(longest_ids)
         longest_df = so_df[so_df['id'].isin(longest_ids)]
 
     #print so_df
@@ -262,7 +262,7 @@ def GetProfilesByStreamOrder(DataDirectory, fname_prefix, df,step=2,slope_window
     # loop through the dataframe and store the data for each profile as an array of
     # slopes and distances
     source_ids = longest_df['id'].unique()
-    print (source_ids)
+    #print (source_ids)
     rows_list = []
     for i, source in enumerate(source_ids):
         this_df = longest_df[longest_df['id'] == source]
@@ -424,7 +424,7 @@ def ClusterProfilesVaryingLength(DataDirectory, OutDirectory, fname_prefix, df, 
     # compute cluster indices
     cl = fcluster(ln, thr, criterion = 'distance')
     print("I've finished! I found {} clusters for you :)".format(cl.max()))
-    print([int(c) for c in cl])
+    #print([int(c) for c in cl])
 
     # assign the cluster id to the dataframe
     for i,src in enumerate(sources):
@@ -451,7 +451,7 @@ def ClusterProfilesVaryingLength(DataDirectory, OutDirectory, fname_prefix, df, 
     source_ids = df['id'].unique()
 
     #plt.title('Hierarchical Clustering Dendrogram')
-    plt.ylabel('$d_R$', fontsize=14)
+    plt.ylabel('Dissimilarity ($d_R$)', fontsize=14)
     R = dendrogram(ln, color_threshold=thr+0.00001, above_threshold_color=threshold_color,no_labels=True)
 
     plt.axhline(y = thr, color = 'r', ls = '--')

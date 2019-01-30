@@ -262,7 +262,7 @@ class MapFigure(object):
         if colourbar_location == "Right" or colourbar_location == "RIGHT":
             colourbar_location = "right"
 
-        print("Your colourbar will be located: "+ colourbar_location)
+        #print("Your colourbar will be located: "+ colourbar_location)
         if colourbar_location == "top" or colourbar_location == "bottom":
             self.colourbar_location = colourbar_location
             self.colourbar_orientation = "horizontal"
@@ -315,7 +315,7 @@ class MapFigure(object):
         self._drape_list = []
 
         self.ax_list = self.make_base_image(self.ax_list)
-        print(self.ax_list[0])
+        #print(self.ax_list[0])
 
         # A title if needed
         self.title = plot_title
@@ -366,15 +366,15 @@ class MapFigure(object):
             raise ValueError("Sorry, the coordinate type: ", self._coord_type,
                              "is not yet supported")
 
-        print("I made the ticks.")
-        print("x labels are: ")
-        print(self.tick_x_labels)
-        print("x locations are:")
-        print(self.tick_xlocs)
-        print("y labels are: ")
-        print(self.tick_y_labels)
-        print("y locations are:")
-        print(self.tick_ylocs)
+        #print("I made the ticks.")
+        #print("x labels are: ")
+        #print(self.tick_x_labels)
+        #print("x locations are:")
+        # print(self.tick_xlocs)
+        # print("y labels are: ")
+        # print(self.tick_y_labels)
+        # print("y locations are:")
+        # print(self.tick_ylocs)
 
     def add_ticks_to_axis(self,ax):
         """
@@ -473,7 +473,7 @@ class MapFigure(object):
         # We need to initiate with a figure
         #self.ax = self.fig.add_axes([0.1,0.1,0.7,0.7])
 
-        print("This colourmap is: "+ self._RasterList[0]._colourmap)
+        #print("This colourmap is: "+ self._RasterList[0]._colourmap)
         im = self.ax_list[0].imshow(self._RasterList[0]._RasterArray, self._RasterList[0]._colourmap, extent = self._RasterList[0].extents, interpolation="nearest", alpha = self._RasterList[0]._alpha)
 
         # This affects all axes because we set share_all = True.
@@ -482,9 +482,9 @@ class MapFigure(object):
         self.ax_list[0] = self.add_ticks_to_axis(self.ax_list[0])
         self._drape_list.append(im)
 
-        print("The number of axes are: "+str(len(self._drape_list)))
+        #print("The number of axes are: "+str(len(self._drape_list)))
 
-        print(self.ax_list[0])
+        #print(self.ax_list[0])
         return self.ax_list
 
     def add_drape_image(self,RasterName,Directory,colourmap = "gray",
@@ -1158,7 +1158,7 @@ class MapFigure(object):
         this_ylim = self.ax_list[0].get_ylim()
 
         EPSG_string = self._RasterList[0]._EPSGString
-        print("I am going to plot some points for you. The EPSG string is:"+EPSG_string)
+        #print("I am going to plot some points for you. The EPSG string is:"+EPSG_string)
 
 
         # convert to easting and northing or pull easting northing from file
@@ -1171,7 +1171,7 @@ class MapFigure(object):
             easting = thisPointData.QueryData("easting").as_matrix().astype(float)
             northing = thisPointData.QueryData("northing").as_matrix().astype(float)
 
-        print("I got the easting and northing")
+        #print("I got the easting and northing")
 
         # check if the column for plotting exists
         # BG - 16/01/2018 - Adding some exception management. Sometimes, a list can be returned by QueryData and crash here
@@ -1180,7 +1180,7 @@ class MapFigure(object):
         except AttributeError:
             this_data = thisPointData.QueryData(column_for_plotting)
 
-        print("I got the data column you wanted")
+        #print("I got the data column you wanted")
         if(color_abs):
             print("I will color your data using its absolute value")
             this_data = np.abs(this_data)
@@ -1191,33 +1191,33 @@ class MapFigure(object):
 
         # Now the data for scaling. Point size will be scaled by these data
         scale_data = thisPointData.QueryData(column_for_scaling)
-        print("I also got the data for scaling, which is in column "+column_for_scaling)
+        #print("I also got the data for scaling, which is in column "+column_for_scaling)
         scale_data = np.asarray(scale_data)
         if(scale_in_absolute):
             scale_data = np.abs(scale_data)
         #scale_data = scale_data.flatten()
-        print("The size of the array is: ")
-        print(scale_data.shape)
+        #print("The size of the array is: ")
+        #print(scale_data.shape)
 
         # If there is scaled data, convert to log if that option is selected
         if scaled_data_in_log:
-            print("I am going to convert data to log for point scaling.")
+            #print("I am going to convert data to log for point scaling.")
             if len(scale_data) == 0 or len(scale_data) != len(easting):
                 scale_data = [0.5]
             else:
                 # We need this logic since we can get nans and -Infs from 0 and negative numbers
                 scale_data = np.log10(scale_data)
-                print("I logged (is it a verb?) your scaled data, the minimum is %s and the maximum is %s but all the values inferior to %s will be %s" %(np.nanmin(scale_data), np.nanmax(scale_data), minimum_log_scale_cut_off, minimum_log_scale_cut_off))
+                #print("I logged (is it a verb?) your scaled data, the minimum is %s and the maximum is %s but all the values inferior to %s will be %s" %(np.nanmin(scale_data), np.nanmax(scale_data), minimum_log_scale_cut_off, minimum_log_scale_cut_off))
                 scale_data[scale_data < minimum_log_scale_cut_off] = minimum_log_scale_cut_off
-        else:
-            print("You are not going to use a log scale to scale the size of the points")
+        #else:
+            #print("You are not going to use a log scale to scale the size of the points")
 
 
         # scale the points if you want
         if scale_points == True:
-            print("I am scaling your points for you")
+            #print("I am scaling your points for you")
             if len(scale_data) == 0 or len(scale_data) != len(easting):
-                print("There doesn't seem to be any scaling data. Reverting to manual size.")
+                #print("There doesn't seem to be any scaling data. Reverting to manual size.")
                 point_scale = manual_size
             else:
 
@@ -1233,7 +1233,7 @@ class MapFigure(object):
                 max_sd = np.nanmax(scale_data)
                 min_sd = np.nanmin(scale_data)
 
-                print("max is: "+str(max_sd)+ " and min is: "+ str(min_sd))
+                #print("max is: "+str(max_sd)+ " and min is: "+ str(min_sd))
 
                 # now rescale the data. Always a linear scaling.
                 new_scale = []
@@ -1244,22 +1244,22 @@ class MapFigure(object):
                     new_scale.append(new_size)
                 ns_array = np.asarray(new_scale)
                 point_scale = ns_array
-                print("I have got a scaled point array,")
+                #print("I have got a scaled point array,")
         else:
-            print("I will not scale your points.")
+            #print("I will not scale your points.")
             point_scale = manual_size
 
 
 
-        print("I will plot the points now.")
+        #print("I will plot the points now.")
         if len(this_data) == 0 or len(this_data) != len(easting):
-            print("I am only plotting the points.")
+            #print("I am only plotting the points.")
             unicolor = unicolor
             sc = self.ax_list[0].scatter(easting,northing,s=point_scale, c= unicolor,cmap=this_colourmap,edgecolors='none', alpha = alpha,zorder=zorder, marker = marker)
         else:
-            print("I will colour by the points")
+            #print("I will colour by the points")
             if(colour_manual_scale != []):
-                print("let me rescale the colour using your array")
+            #    print("let me rescale the colour using your array")
                 if(len(colour_manual_scale) == 2):
                     cNorm  = _mcolors.Normalize(vmin=colour_manual_scale[0], vmax=colour_manual_scale[1])
                     #scalarMap = _cm.ScalarMappable(norm = cNorm, cmap= this_colourmap)
@@ -1270,7 +1270,7 @@ class MapFigure(object):
                     sc = self.ax_list[0].scatter(easting,northing,s=point_scale, c=this_data,cmap=this_colourmap,norm=cNorm,edgecolors='none', alpha = alpha,zorder=zorder, marker = marker)
 
                 else:
-                    print("Your colour_log_manual_scale should be something like [min,max], aborting")
+                    #print("Your colour_log_manual_scale should be something like [min,max], aborting")
                     quit()
             else:
                 #sc = self.ax_list[0].scatter(easting,northing,s=point_scale, c=this_data,cmap=this_colourmap,edgecolors='none', alpha = alpha,zorder=zorder, marker = marker)
@@ -1301,7 +1301,7 @@ class MapFigure(object):
         self.ax_list[0].set_ylim(this_ylim)
 
         if show_colourbar == True:
-            print("Your colourbar will be located: "+ colourbar_location)
+            #print("Your colourbar will be located: "+ colourbar_location)
             if colourbar_location == "top" or colourbar_location == "bottom":
                 self.colourbar_location = colourbar_location
                 self.colourbar_orientation = "horizontal"
@@ -1312,7 +1312,7 @@ class MapFigure(object):
                 self.colourbar_location = "None"
                 self.colourbar_orientation = "None"
             if self.colourbar_location != "None":
-                print("Let me add a colourbar for your point data")
+                #print("Let me add a colourbar for your point data")
                 self.ax_list = self.add_point_colourbar(self.ax_list,sc,cmap=this_colourmap, colorbarlabel = colorbarlabel)
 
     def add_line_data(self, ThisLineFile, linestyle = '-', edgecolour = "k", linewidth=0.5, zorder = 1, alpha=0):
@@ -1763,7 +1763,7 @@ class MapFigure(object):
         self.ax_list = self.axis_styler(self.ax_list,axis_style)
 
         map_aspect_ratio = self._RasterList[0]._RasterAspectRatio
-        print("The aspect ratio is: "+str(map_aspect_ratio))
+        #print("The aspect ratio is: "+str(map_aspect_ratio))
 
         # We have to make some adjustments for the colourbar labels since if
         # they have lots of digits we need more space.
@@ -1772,17 +1772,17 @@ class MapFigure(object):
         # figures every time.
         max_cbar_characters = 0
         if adjust_cbar_characters == True:
-            print("I need to adjust the spacing of the colourbar.")
+            #print("I need to adjust the spacing of the colourbar.")
             if self.colourbar_location == "left" or self.colourbar_location == "right":
-                print("You have a colourbar on the left or right, I need to check the number of characters in the labels.")
+                # print("You have a colourbar on the left or right, I need to check the number of characters in the labels.")
                 labels = [item.get_text() for item in self.ax_list[-1].get_yticklabels()]
                 print(labels)
                 for label in labels:
                     if len(label) > max_cbar_characters:
                         max_cbar_characters = len(label)
-                print("The longest colourbar label has "+str(max_cbar_characters)+" characters.")
+                # print("The longest colourbar label has "+str(max_cbar_characters)+" characters.")
         else:
-            print("I am fixing the colourbar labels to have: "+str(fixed_cbar_characters)+ " characters")
+            # print("I am fixing the colourbar labels to have: "+str(fixed_cbar_characters)+ " characters")
             max_cbar_characters = fixed_cbar_characters
 
 
@@ -1798,9 +1798,9 @@ class MapFigure(object):
         else:
             cbar_width = 0.2
             cbar_text_width = 0.4+0.15*(max_cbar_characters-3)   # This is in inches. Because yanks wrote matplotlib.
-            print("I'm adjusting the colourbar text width to "+str(cbar_text_width)+" inches")
+            # print("I'm adjusting the colourbar text width to "+str(cbar_text_width)+" inches")
 
-        print("The cbar characters are: "+str(max_cbar_characters)+" and the cbar text width is: "+str(cbar_text_width))
+        # print("The cbar characters are: "+str(max_cbar_characters)+" and the cbar text width is: "+str(cbar_text_width))
         fig_size_inches, map_axes, cbar_axes = phelp.MapFigureSizer(fig_width_inches,
                                                               map_aspect_ratio,
                                                               self.colourbar_location,
@@ -1820,7 +1820,7 @@ class MapFigure(object):
         if self.title != "None":
             self.ax_list[0].set_title(self.title)
 
-        print("Number of axes are: " + str(len(self.ax_list)))
+        # print("Number of axes are: " + str(len(self.ax_list)))
 
 
         if cbar_axes == None:

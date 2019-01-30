@@ -107,12 +107,12 @@ class LSDMap_PointData(object):
             print("The object file prefix is: " + self.FilePrefix)
 
         self.PANDEX = PANDEX
-        
+
 
         ######################### THIS PART OF THE CODE IS ONLY USING PANDAS #########################
         if(self.PANDEX == True):
-            print("Warning, you are using an experimental version of LSDMT that is implementing Pandas dataframe to improve the performance. It is still unstable, switch PANDEX to False in your PointData parameters to use the regular way")
-            print("Loading your file from " + data_type)
+            #print("Warning, you are using an experimental version of LSDMT that is implementing Pandas dataframe to improve the performance. It is still unstable, switch PANDEX to False in your PointData parameters to use the regular way")
+            #print("Loading your file from " + data_type)
             if(data_type == "csv"):
                 data = pandas.read_csv(FileName, sep=",")
             else:
@@ -135,7 +135,7 @@ class LSDMap_PointData(object):
                 print(self.VariableList)
             else:
                self.Longitude = self.PointData["longitude"].values
-            print("done")
+            #print("done")
 
         ######################## THIS THE END OF THE PANDEX TEST #######################################
         else:
@@ -197,8 +197,8 @@ class LSDMap_PointData(object):
 
                     self.PointData = DataDictTyped
                     self.DataTypes = TypeList
-                    print(self.PointData)
-                    print(self.DataTypes)
+                    #print(self.PointData)
+                    #print(self.DataTypes)
                 else:
                     print("I am loading data using pandas, I haven't been widely tested yet, you can switch to the old way if you have troubles by looking for native_way in LSDMap_PointData")
                     #Loading the file
@@ -361,7 +361,7 @@ class LSDMap_PointData(object):
         Author: SMM
         """
         if data_name not in self.VariableList:
-            print("The data " + data_name + " is not one of the data elements in this point data")
+            #print("The data " + data_name + " is not one of the data elements in this point data")
             empty_list = []
             return empty_list
         else:
@@ -390,7 +390,7 @@ class LSDMap_PointData(object):
 
         Author: SMM
         """
-        print("Yo, getting this stuff: "+EPSG_string)
+        #print("Yo, getting this stuff: "+EPSG_string)
         # The lat long are in epsg 4326 which is WGS84
         inProj = Proj(init='epsg:4326')
         outProj = Proj(init=EPSG_string)
@@ -399,7 +399,7 @@ class LSDMap_PointData(object):
 
         #print("The latitude is: ")
         #print(self.Latitude)
-        
+
         #print("Now the lat is")
         #print(self.Latitude.values)
         #print(this_Lon)

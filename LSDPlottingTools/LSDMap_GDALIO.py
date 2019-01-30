@@ -290,7 +290,7 @@ def GetUTMEPSG(FileName):
     EPSG_string = 'NULL'
 
     # get the projection
-    print("Let me get that projection for you")
+    #print("Let me get that projection for you")
     prj=SourceDS.GetProjection()
     srs=osr.SpatialReference(wkt=prj)
 
@@ -299,11 +299,11 @@ def GetUTMEPSG(FileName):
         #print(str(srs.GetAttrValue(str('PROJCS'),0)))
 
 
-        print(srs.GetAttrValue(str('projcs')))
+        #print(srs.GetAttrValue(str('projcs')))
         proj_str = srs.GetAttrValue(str('projcs'))
-        print("The projection string is: "+proj_str)
+        #print("The projection string is: "+proj_str)
 
-        print(proj_str)
+        #print(proj_str)
 
 
         if proj_str != None:
@@ -332,19 +332,19 @@ def GetUTMEPSG(FileName):
             # adding some logic for zones < 10
             if len(zone) < 2:
                 zone = '0'+zone
-                
+
             EPSG_string = 'epsg:'
             if N_or_S == 'S':
                 EPSG_string = EPSG_string+'327'+zone
             else:
                 EPSG_string = EPSG_string+'326'+zone
-            print("The EPSG string is: "+EPSG_string)
+            #print("The EPSG string is: "+EPSG_string)
     else:
         raise Exception("This is not a projected coordinate system!")
 
 
 
-    print(EPSG_string)
+    #print(EPSG_string)
     return EPSG_string
 
 
@@ -392,11 +392,11 @@ def CheckNoData(FileName):
         raise Exception("Unable to read the data file")
     NoDataValue = SourceDS.GetRasterBand(1).GetNoDataValue()
 
-    print("In the check nodata routine. Nodata is: ")
-    print(NoDataValue)
+    #print("In the check nodata routine. Nodata is: ")
+    #print(NoDataValue)
 
     if NoDataValue == None:
-        print("This raster does not have no data. Updating the header file")
+        #print("This raster does not have no data. Updating the header file")
         header_name = FileName[:-4]
         header_name = header_name+".hdr"
 
@@ -459,7 +459,7 @@ def ReadRasterArrayBlocks(raster_file,raster_band=1):
     xsize = band.XSize
     ysize = band.YSize
 
-    print("xsize: " +str(xsize)+" and y size: " + str(ysize))
+    #print("xsize: " +str(xsize)+" and y size: " + str(ysize))
 
     max_value = band.GetMaximum()
     min_value = band.GetMinimum()
@@ -493,7 +493,7 @@ def ReadRasterArrayBlocks(raster_file,raster_band=1):
             # move these values to the data array
             data_array[i:i+rows,j:j+cols] = values
 
-    print("NoData is:", NoDataValue)
+    #print("NoData is:", NoDataValue)
     if NoDataValue is not None:
         nodata_mask = data_array == NoDataValue
         data_array[nodata_mask] = np.nan
@@ -745,7 +745,7 @@ def PolygoniseRaster(DataDirectory, RasterFile, OutputShapefile='polygons'):
     # This is necessary to filter the basin results
     geoms = list(results)
     #print("Geom size is: "+str(len(geoms)))
-    
+
     filtered_geoms = {}
     area_dict = {}
     for f in geoms:
@@ -757,24 +757,24 @@ def PolygoniseRaster(DataDirectory, RasterFile, OutputShapefile='polygons'):
             print("Whoops. Found a repeated ID. Getting rid of the smaller one.")
             if area_dict[this_val] < this_area:
                 filtered_geoms[this_val] = f
-                area_dict[this_val] = this_area               
+                area_dict[this_val] = this_area
                 print("Found a repeated ID. Keeping the one with area of "+str(this_area))
             else:
                 print("Keeping the initial ID.")
         else:
             filtered_geoms[this_val] = f
             area_dict[this_val] = this_area
-    
+
     new_geoms = []
     for key,item in filtered_geoms.items():
         this_shape = Polygon(shape(item['geometry']))
         this_val = float(item['properties']['raster_val'])
-        #print("ID is: "+str(this_val)) 
+        #print("ID is: "+str(this_val))
         this_area = this_shape.area
         #print("Area is: "+str(this_area))
         new_geoms.append(item)
     #print("Geom size is: "+str(len(new_geoms)))
-            
+
     # transform results into shapely geometries and write to shapefile using fiona
     PolygonDict = {}
     with fiona.open(DataDirectory+OutputShapefile, 'w', crs=crs, driver='ESRI Shapefile', schema=schema) as output:
@@ -867,8 +867,8 @@ def CreateShapefileOfRasterFootprint(DataDirectory, RasterFile):
     basemap.
     Variously put together from:
     http://osgeo-org.1560.x6.nabble.com/gdal-dev-Creating-a-simple-shapefile-with-ogr-td3749101.html
-    
-    
+
+
     Args:
         DataDirectory (str): the data directory with the basin raster
         RasterFile (str): the name of the raster
@@ -877,7 +877,7 @@ def CreateShapefileOfRasterFootprint(DataDirectory, RasterFile):
         Shapefile of the raster footprint
 
     Author: SMM
-    
+
     Date: 23/01/2018
     """
 
@@ -890,20 +890,20 @@ def CreateShapefileOfRasterFootprint(DataDirectory, RasterFile):
     if not DataDirectory.endswith(os.sep):
         print("You forgot the separator at the end of the directory, appending...")
         DataDirectory = DataDirectory+os.sep
-        
+
     # Get the raster prefix
     SplitRasterfile = RasterFile.split(".")
     RasterPrefix = SplitRasterfile[0]
- 
+
     # get the espg of the raster
     FullFilename = DataDirectory+RasterFile
-    ESPG_this_raster = GetUTMEPSG(FullFilename)  
+    ESPG_this_raster = GetUTMEPSG(FullFilename)
     ESPG_this_raster = str(ESPG_this_raster)
     print("The raster has coordinate of: "+ESPG_this_raster)
     ESPG_this_raster_split = ESPG_this_raster.split(":")
-    ESPG_this_raster = ESPG_this_raster_split[-1] 
+    ESPG_this_raster = ESPG_this_raster_split[-1]
     print ("This ESPG is: "+str(ESPG_this_raster))
-    
+
     # Get extent of raster
     [xmin,xmax,ymin,ymax] = GetRasterExtent(FullFilename)
 
@@ -917,54 +917,54 @@ def CreateShapefileOfRasterFootprint(DataDirectory, RasterFile):
 
     # Create polygon
     poly = ogr.Geometry(ogr.wkbPolygon)
-    poly.AddGeometry(ring)    
-    
+    poly.AddGeometry(ring)
+
     # Create a coordinate transformation
     source = osr.SpatialReference()
     source.ImportFromEPSG(int(ESPG_this_raster))
-    
+
     target = osr.SpatialReference()
     target.ImportFromEPSG(4326)
-    
+
     transform = osr.CoordinateTransformation(source, target)
-    
+
     # now transformt the polygon
     poly.Transform(transform)
-    
+
     # see what you got
     #print("The polygon is:")
-    #print(poly.ExportToWkt()) 
+    #print(poly.ExportToWkt())
 
     # create the data source
-    OutFileName = DataDirectory+RasterPrefix+"_footprint.shp" 
+    OutFileName = DataDirectory+RasterPrefix+"_footprint.shp"
     print("The output shapefile is: "+OutFileName)
-    datasource = driver.CreateDataSource(OutFileName)    
+    datasource = driver.CreateDataSource(OutFileName)
 
 
     # create the layer
     layer = datasource.CreateLayer(OutFileName, target, ogr.wkbPolygon)
-    feature = ogr.Feature(layer.GetLayerDefn())   
+    feature = ogr.Feature(layer.GetLayerDefn())
     feature.SetGeometry(poly)
     layer.CreateFeature(feature)
-    
+
     # Clean up
     feature.Destroy()
     datasource.Destroy()
-    
-    
+
+
 def GetCentreAndExtentOfRaster(DataDirectory, RasterFile):
     """
-    This function takes a raster and returns the centrepoint and the extent in both degrees and metres. 
-    
+    This function takes a raster and returns the centrepoint and the extent in both degrees and metres.
+
     Args:
         DataDirectory (str): the data directory with the basin raster
         RasterFile (str): the name of the raster
 
     Returns:
-        The lat-long of the centrepoint, the x-y- extent in both degrees and metres 
+        The lat-long of the centrepoint, the x-y- extent in both degrees and metres
 
     Author: SMM
-    
+
     Date: 01/02/2018
     """
 
@@ -977,63 +977,63 @@ def GetCentreAndExtentOfRaster(DataDirectory, RasterFile):
     if not DataDirectory.endswith(os.sep):
         print("You forgot the separator at the end of the directory, appending...")
         DataDirectory = DataDirectory+os.sep
-        
+
     # Get the raster prefix
     SplitRasterfile = RasterFile.split(".")
     RasterPrefix = SplitRasterfile[0]
- 
+
     # get the espg of the raster
     FullFilename = DataDirectory+RasterFile
-    ESPG_this_raster = GetUTMEPSG(FullFilename)  
+    ESPG_this_raster = GetUTMEPSG(FullFilename)
     ESPG_this_raster = str(ESPG_this_raster)
     print("The raster has coordinate of: "+ESPG_this_raster)
     ESPG_this_raster_split = ESPG_this_raster.split(":")
-    ESPG_this_raster = ESPG_this_raster_split[-1] 
+    ESPG_this_raster = ESPG_this_raster_split[-1]
     print ("This ESPG is: "+str(ESPG_this_raster))
-    
+
     # Get extent of raster
     [xmin,xmax,ymin,ymax] = GetRasterExtent(FullFilename)
     xproj_extent = xmax-xmin
     yproj_extent = ymax-ymin
-        
+
     # Create ring
     ring = ogr.Geometry(ogr.wkbLinearRing)
     ring.AddPoint(xmin, ymin)
     ring.AddPoint(xmin, ymax)
     ring.AddPoint(xmax, ymax)
     ring.AddPoint(xmax, ymin)
-    
+
     # Create a coordinate transformation
     source = osr.SpatialReference()
     source.ImportFromEPSG(int(ESPG_this_raster))
-    
+
     target = osr.SpatialReference()
     target.ImportFromEPSG(4326)
-    
+
     transform = osr.CoordinateTransformation(source, target)
-    
+
     # now transform the ring so you can get coordinates in lat-long
     ring.Transform(transform)
-    
+
     # now get the xmin,ymin, and xmax, ymax coords in lat-long
     pt1 = ring.GetPoint(0)
     min_long = pt1[0]
     min_lat = pt1[1]
-    
+
     pt2 = ring.GetPoint(2)
     max_long = pt2[0]
     max_lat = pt2[1]
-    
+
     extent_long = max_long-min_long
     extent_lat = max_lat-min_lat
-    
+
     centre_long = min_long+extent_long*0.5
     centre_lat = min_lat+extent_lat*0.5
-    
+
     return centre_lat, centre_long, extent_lat, extent_long, xproj_extent, yproj_extent
-    
-    
-    
+
+
+
     # Leaving this here to show how to loop through points
     # Now try with the geometry tools
     #print("Trying ring")
@@ -1041,4 +1041,3 @@ def GetCentreAndExtentOfRaster(DataDirectory, RasterFile):
     #    pt = ring.GetPoint(i)
     #    print("The point is: ")
     #    print(str(pt[0])+" "+str(pt[1]))
-    

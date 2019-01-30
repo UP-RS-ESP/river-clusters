@@ -94,19 +94,10 @@ def PlotProfilesByCluster(DataDirectory, OutDirectory, fname_prefix, stream_orde
 
     Author: FJC
     """
+    print("Making plots of the river profiles in each cluster")
 
-    # find the maximum distance from outlet in each cluster and use this to sort
-    # the data
-    # idx = cluster_df.groupby(['cluster_id'])['distance_from_outlet'].transform(max) == df['distance_from_outlet']
-    # lengths = cluster_df[idx]
-    # lengths = lengths.sort_values(by=['distance_from_outlet'])
-    # print lengths
-    # # find the unique clusters for plotting
-    # clusters = lengths['cluster_id'].tolist()
     cluster_df = pd.read_csv(OutDirectory+fname_prefix+'_profiles_clustered_SO{}.csv'.format(stream_order))
     clusters = cluster_df['cluster_id'].unique()
-    #clusters.sort()
-
 
     #counter = 0
     for cl in clusters:
@@ -136,7 +127,7 @@ def PlotProfilesByCluster(DataDirectory, OutDirectory, fname_prefix, stream_orde
         ax.set_ylabel('Gradient')
         ax.set_title('Cluster {}'.format(int(cl)))
 
-        plt.savefig(OutDirectory+fname_prefix+('_profiles_SO{}_CL{}.png').format(stream_order, int(cl)), dpi=300)
+        plt.savefig(OutDirectory+fname_prefix+('_profiles_SO{}_CL{}.png').format(stream_order, int(cl)), dpi=300, transparent=True)
         plt.clf()
 
     # write the clustered dataframe to csv
@@ -151,6 +142,7 @@ def PlotMedianProfiles(DataDirectory, OutDirectory, fname_prefix, stream_order=1
 
     Author: FJC
     """
+    print("I'm making plots of the median profiles for each cluster")
     df = pd.read_csv(OutDirectory+fname_prefix+'_profiles_clustered_SO{}.csv'.format(stream_order))
 
     # find out some info
@@ -165,7 +157,7 @@ def PlotMedianProfiles(DataDirectory, OutDirectory, fname_prefix, stream_order=1
     # make a big subplot to allow sharing of axis labels
     fig.add_subplot(111, frameon=False)
     # hide tick and tick label of the big axes
-    plt.tick_params(labelcolor='none', top='off', bottom='off', left='off', right='off')
+    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
 
     # for each cluster, get the mean gradient for each regular distance
     for i, cl in enumerate(clusters):
@@ -190,7 +182,7 @@ def PlotMedianProfiles(DataDirectory, OutDirectory, fname_prefix, stream_order=1
     #ax.legend(loc='upper right')
 
     # save and clear the figure
-    plt.savefig(OutDirectory+fname_prefix+('_profiles_median_SO{}.png'.format(stream_order)), dpi=300)
+    plt.savefig(OutDirectory+fname_prefix+('_profiles_median_SO{}.png'.format(stream_order)), dpi=300,transparent=True)
     plt.clf()
     plt.cla()
     plt.close()
@@ -207,6 +199,7 @@ def PlotSlopeAreaAllProfiles(DataDirectory, OutDirectory, fname_prefix, stream_o
 
     Author: FJC
     """
+    print("I'm making a slope-area plot for each cluster")
     cluster_df = pd.read_csv(OutDirectory+fname_prefix+'_profiles_clustered_SO{}.csv'.format(stream_order))
     df = pd.read_csv(DataDirectory+fname_prefix+'_slopes.csv')
 
@@ -223,7 +216,7 @@ def PlotSlopeAreaAllProfiles(DataDirectory, OutDirectory, fname_prefix, stream_o
     # make a big subplot to allow sharing of axis labels
     fig.add_subplot(111, frameon=False)
     # hide tick and tick label of the big axes
-    plt.tick_params(labelcolor='none', top='off', bottom='off', left='off', right='off')
+    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
 
     # we need to add the cluster ID into the full dataframe
     for i,id in enumerate(sources):
@@ -246,7 +239,14 @@ def PlotSlopeAreaAllProfiles(DataDirectory, OutDirectory, fname_prefix, stream_o
 
         # calculate the channel steepness
         area = filter_df['drainage_area'].values
+
         med_slopes, lower_per, upper_per, bin_centres, _ = bin_slope_area_data(filter_df['slope'], area, nbins=nbins)
+
+        # only for Bitterroot 3rd order
+        # if i == 0:
+        #     fluvial_df = filter_df[filter_df['drainage_area'] > 100000]
+        #     area = fluvial_df['drainage_area'].values
+        #     med_slopes, lower_per, upper_per, bin_centres, _ = bin_slope_area_data(fluvial_df['slope'], area, nbins=nbins)
 
         # nan checking
         bin_centres = [x for i, x in enumerate(bin_centres) if not np.isnan(med_slopes[i])]
@@ -269,8 +269,8 @@ def PlotSlopeAreaAllProfiles(DataDirectory, OutDirectory, fname_prefix, stream_o
         gradient_err = results.bse[1]
         intercept = float(10**intercept)
         intercept_err = float(10**intercept_err)
-        print('Intercept: {}'.format(intercept))
-        print('Gradient: {}'.format(gradient))
+        #print('Intercept: {}'.format(intercept))
+        #print('Gradient: {}'.format(gradient))
 
         # transform binned data into normal for plotting
         med_slopes = np.array([10**x for x in med_slopes])
@@ -284,7 +284,7 @@ def PlotSlopeAreaAllProfiles(DataDirectory, OutDirectory, fname_prefix, stream_o
         x2 = np.linspace(np.min(med_areas),np.max(med_areas),100)
         y2 = intercept*x2**(gradient)
 
-        print(len(med_areas), len(med_slopes))
+        #print(len(med_areas), len(med_slopes))
 
         # get the colour from the dataframe
         this_colour = str(this_df.colour.unique()[0])
@@ -292,13 +292,15 @@ def PlotSlopeAreaAllProfiles(DataDirectory, OutDirectory, fname_prefix, stream_o
         ax[i].scatter(filter_df['drainage_area'], filter_df['slope'], color=this_colour, s=1)
         ax[i].errorbar(med_areas, med_slopes, xerr=None, yerr=[lower_err, upper_err], fmt='o', ms=5, marker='D', mfc='w', mec='k', zorder=3, c='k')
         # ax[i].scatter(med_areas, med_slopes, color='w',zorder=3, s=20, marker='D', edgecolors='k')
-        ax[i].plot(x2, y2, "--", c='k')
+        ax[i].plot(x2, y2, ls="--", c='k')
         # ax[i].text(0.15, 0.1,'Cluster {}'.format(int(cl)),horizontalalignment='center',verticalalignment='center',transform = ax[i].transAxes,fontsize=12)
         ax[i].set_xscale('log')
         ax[i].set_yscale('log')
-        ax[i].set_xlim(area_t-300,)
-        ax[i].set_ylim(0.001, 1)
+        #ax[i].set_xlim(area_t-300,1e5)
+        #ax[i].set_ylim(10**(-1.7), 10**(-0.2))
         ax[i].set_title('Cluster {}: $k_s$ = {} $\pm$ {}; $\\theta$ = {} $\pm$ {}'.format(int(cl), round(intercept,2), round(intercept_err,2), round(abs(gradient),2), round(abs(gradient_err), 2)), fontsize=12)
+
+        print('Cluster {}: k_s = {} +- {}; theta = {} +- {}'.format(int(cl), round(intercept,2), round(intercept_err,2), round(abs(gradient),2), round(abs(gradient_err), 2)))
 
     # set axis labels
     plt.xlabel('Drainage area (m$^2$)', fontsize=14)
@@ -309,33 +311,41 @@ def PlotSlopeAreaAllProfiles(DataDirectory, OutDirectory, fname_prefix, stream_o
         plt.subplots_adjust(left=0.15, hspace=0.3)
 
     # save and clear the figure
-    plt.savefig(OutDirectory+fname_prefix+('_SA_median_SO{}.png'.format(stream_order)), dpi=300)
+    plt.savefig(OutDirectory+fname_prefix+('_SA_median_SO{}.png'.format(stream_order)), dpi=300, transparent=True)
     plt.clf()
     plt.cla()
     plt.close()
 
-def PlotSlopeAreaVsChi(DataDirectory, fname_prefix):
+def PlotSlopeArea(DataDirectory, fname_prefix):
     """
-    Make a summary plot showing a SA plot and a chi plot for all the channels in the basin
+    Make a summary plot showing a SA plot for all the channels in the basin
 
     Author: FJC
     """
+    print("I'm making a summary slope--area plot for all the channels in the basin")
     df = pd.read_csv(DataDirectory+fname_prefix+'_slopes.csv')
 
     # find out some info
     sources = df.id.unique()
 
     # set up a figure
-    fig,ax = plt.subplots(nrows=1,ncols=2, figsize=(10,4.5), sharex=False, sharey=False)
+    fig,ax = plt.subplots(nrows=1,ncols=1, figsize=(7,5), sharex=False, sharey=False)
 
     filter_df = df[df['drainage_area'] > 1000]
     # calculate the channel steepness
     area = filter_df['drainage_area'].values
     med_slopes, lower_per, upper_per, bin_centres, _ = bin_slope_area_data(filter_df['slope'], area)
 
+    # check for nans
+    bin_centres = bin_centres[np.isnan(med_slopes) == False] #np.ma.masked_where(np.isnan(med_slopes), bin_centres)
+    lower_per = lower_per[np.isnan(med_slopes) == False]
+    upper_per = upper_per[np.isnan(med_slopes) == False]
+    med_slopes = med_slopes[np.isnan(med_slopes) == False] #med_slopes = np.ma.masked_where(np.isnan(med_slopes), med_slopes)
     # linear regression using statsmodels
     # include constant in ols models, which is not done by default
     x = sm.add_constant(bin_centres)
+
+    #print(bin_centres, med_slopes)
 
     # ordinary least squares
     model = sm.OLS(med_slopes,x)
@@ -348,8 +358,8 @@ def PlotSlopeAreaVsChi(DataDirectory, fname_prefix):
     gradient_err = results.bse[1]
     intercept = float(10**intercept)
     intercept_err = float(10**intercept_err)
-    print('Intercept: {}'.format(intercept))
-    print('Gradient: {}'.format(gradient))
+    #print('Intercept: {}'.format(intercept))
+    #print('Gradient: {}'.format(gradient))
 
     # transform binned data into normal for plotting
     med_slopes = np.array([10**x for x in med_slopes])
@@ -364,41 +374,29 @@ def PlotSlopeAreaVsChi(DataDirectory, fname_prefix):
     y2 = intercept*x2**(gradient)
 
     # LEFT - slope area plot
-    ax[0].grid(color='0.8', linestyle='--', which='both', zorder=1)
-    ax[0].scatter(filter_df['drainage_area'], filter_df['slope'], color='0.5', s=1, zorder=2)
-    ax[0].errorbar(med_areas, med_slopes, xerr=None, yerr=[lower_err, upper_err], fmt='o', ms=5, marker='D', mfc='r', mec='k', zorder=3, c='k')
-    ax[0].plot(x2, y2, "--", c='k')
-    #ax[0].text(0.15, 0.1,'Cluster {}'.format(int(cl)),horizontalalignment='center',verticalalignment='center',transform = ax[0][i].transAxes,fontsize=12)
-    ax[0].set_xscale('log')
-    ax[0].set_yscale('log')
-    ax[0].set_xlim(700,)
-    ax[0].set_ylim(0.0001, 10)
-    ax[0].set_title('$k_s$ = {} $\pm$ {}; $\\theta$ = {} $\pm$ {}'.format(round(intercept,2), round(intercept_err,2), round(abs(gradient),2), round(abs(gradient_err), 2)), fontsize=14)
+    ax.grid(color='0.8', linestyle='--', which='both', zorder=1)
+    ax.scatter(filter_df['drainage_area'], filter_df['slope'], color='0.5', s=1, zorder=2)
+    ax.errorbar(med_areas, med_slopes, xerr=None, yerr=[lower_err, upper_err], fmt='o', ms=5, marker='D', mfc='r', mec='k', zorder=3, c='k')
+    ax.plot(x2, y2, "--", c='k')
+    #ax.text(0.15, 0.1,'Cluster {}'.format(int(cl)),horizontalalignment='center',verticalalignment='center',transform = ax[i].transAxes,fontsize=12)
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    #ax.set_xlim(700,)
+    #ax.set_ylim(0.0001, 10)
+    ax.set_title('$k_s$ = {} $\pm$ {}; $\\theta$ = {} $\pm$ {}'.format(round(intercept,2), round(intercept_err,2), round(abs(gradient),2), round(abs(gradient_err), 2)), fontsize=14)
 
 
     # set axis labels
-    ax[0].set_xlabel('Drainage area (m$^2$)', fontsize=14)
-    ax[0].set_ylabel('Gradient (m/m)', labelpad=15, fontsize=14)
-    plt.subplots_adjust(wspace=0.3,bottom=0.15)
-
-    # RIGHT - chi plot
-    chi_df = pd.read_csv(DataDirectory+fname_prefix+'_MChiSegmented.csv')
-    norm = mcolors.Normalize(vmin=chi_df['m_chi'].min(),vmax=30)
-    ax[1].grid(color='0.8', linestyle='--', which='both', zorder=1)
-    sc = ax[1].scatter(chi_df['chi'], chi_df['elevation'], c=chi_df['m_chi'], cmap=cm.viridis, norm=norm, s=1, zorder=2)
-    ax[1].set_xlabel('$\chi$ (m)', fontsize=14)
-    ax[1].set_ylabel('Elevation (m)', labelpad=15, fontsize=14)
-
-    # add a colourbar_location
-    cax = fig.add_axes([0.58, 0.82, 0.2, 0.02])
-    cbar = plt.colorbar(sc,cmap=cm.viridis, orientation='horizontal',cax=cax)
-    cbar.set_label('$k_s$', fontsize=10)
+    ax.set_xlabel('Drainage area (m$^2$)', fontsize=14)
+    ax.set_ylabel('Gradient (m/m)', labelpad=15, fontsize=14)
+    plt.subplots_adjust(left=0.15, bottom=0.15)
 
     # save and clear the figure
-    plt.savefig(DataDirectory+fname_prefix+'_SA_all.png', dpi=300)
+    plt.savefig(DataDirectory+fname_prefix+'_SA_all.png', dpi=300, transparent=True)
     plt.clf()
     plt.cla()
     plt.close()
+    #print("DONE")
 
 def PlotUniqueStreamsWithLength(DataDirectory, OutDirectory, fname_prefix, step=2, slope_window_size=25):
     """
@@ -434,7 +432,7 @@ def PlotUniqueStreamsWithLength(DataDirectory, OutDirectory, fname_prefix, step=
     ax.set_xlabel('Profile length (m)')
     ax.set_ylabel('Number of unique channels')
 
-    plt.savefig(OutDirectory+fname_prefix+'_n_channels_with_length.png', dpi=300)
+    plt.savefig(OutDirectory+fname_prefix+'_n_channels_with_length.png', dpi=300, transparent=True)
     plt.clf()
 
 def PlotLongitudinalProfiles(DataDirectory, fname_prefix):
@@ -457,13 +455,14 @@ def PlotLongitudinalProfiles(DataDirectory, fname_prefix):
     ax.set_xlabel('Distance from outlet (m)')
     ax.set_ylabel('Elevation (m)')
 
-    plt.savefig(DataDirectory+fname_prefix+'_long_profiles.png', dpi=300)
+    plt.savefig(DataDirectory+fname_prefix+'_long_profiles.png', dpi=300, transparent=True)
     plt.clf()
 
 def PlotTrunkChannel(DataDirectory, fname_prefix):
     """
     Make a simple plot of the longest channel. This is mostly to use for the model runs.
     """
+    print("I'm plotting the trunk channel...")
     df = pd.read_csv(DataDirectory+fname_prefix+'_all_tribs.csv')
 
     # set up a figure
@@ -472,16 +471,20 @@ def PlotTrunkChannel(DataDirectory, fname_prefix):
     trunk_src = df.loc[df['distance_from_outlet'].idxmax()]['id']
 
     this_df = df[df['id'] == trunk_src]
-    ax.grid(color='0.8', linestyle='--', which='major')
-    ax.plot(this_df['distance_from_outlet'], this_df['elevation'], c='k')
+    dist_from_outlet = this_df['distance_from_outlet'].values
+    max_dist = np.max(dist_from_outlet)
+    dist_from_source = abs(dist_from_outlet - max_dist)
 
-    ax.set_xlabel('Distance from outlet (m)', fontsize=14)
+    ax.grid(color='0.8', linestyle='--', which='major')
+    ax.plot(dist_from_source, this_df['elevation'], c='k')
+
+    ax.set_xlabel('Distance from source (m)', fontsize=14)
     ax.set_ylabel('Elevation (m)', fontsize=14)
     #ax.set_xlim(0,2500)
     ax.set_ylim(0,40)
     plt.subplots_adjust(bottom=0.2, left=0.15)
 
-    plt.savefig(DataDirectory+fname_prefix+'_trunk_profile.png', dpi=300)
+    plt.savefig(DataDirectory+fname_prefix+'_trunk_profile.png', dpi=300, transparent=True)
     plt.clf()
 
 def PlotElevDistanceTrunkChannel(DataDirectory, fname_prefix, stream_order=1):
@@ -528,14 +531,14 @@ def PlotElevDistanceTrunkChannel(DataDirectory, fname_prefix, stream_order=1):
     #ax.set_xlim(0,2500)
     #ax.set_ylim(0,35)
 
-    plt.savefig(DataDirectory+fname_prefix+'_trunk_elev_dist.png', dpi=300)
+    plt.savefig(DataDirectory+fname_prefix+'_trunk_elev_dist.png', dpi=300, transparent=True)
     plt.clf()
 
 def MakeBoxPlotByCluster(DataDirectory, OutDirectory, fname_prefix, stream_order=1):
     """
     Make a boxplot showing the channel gradient stats for each cluster
     """
-
+    print("Making a boxplot of the channel gradient in each cluster...")
     # read the csv and get some info
     df = pd.read_csv(OutDirectory+fname_prefix+"_profiles_clustered_SO{}.csv".format(stream_order))
 
@@ -595,13 +598,14 @@ def MakeBoxPlotByCluster(DataDirectory, OutDirectory, fname_prefix, stream_order
     plt.suptitle('')
     ax.set_ylabel('Gradient (m/m)', fontsize=14)
     plt.subplots_adjust(left=0.2)
-    plt.savefig(OutDirectory+fname_prefix+'_boxplot_SO{}.png'.format(stream_order), dpi=300)
+    plt.savefig(OutDirectory+fname_prefix+'_boxplot_SO{}.png'.format(stream_order), dpi=300, transparent=True)
     plt.clf()
 
 def MakeCatchmentMetricsBoxPlot(DataDirectory, OutDirectory, fname_prefix, stream_order=1):
     """
-    Make a boxplot showing the channel gradient stats for each cluster
+    Make a boxplot showing the catchment metric stats for each cluster
     """
+    print("I'm making a boxplot of the catchment metrics for each cluster")
     mpl.rcParams['ytick.labelsize'] = 8
 
     # read the csv and get some info
@@ -625,8 +629,8 @@ def MakeCatchmentMetricsBoxPlot(DataDirectory, OutDirectory, fname_prefix, strea
         this_df = master_df[master_df['cluster_id'] == cl]
         print("Cluster {}, median gradient = {}".format(cl, this_df['mean_slope'].median()))
         print("Cluster {}, IQR = {}".format(cl, stats.iqr(this_df['mean_slope'])))
-        print("Cluster {}, median relief =  {}".format(cl, this_df['roughness'].median()))
-        print("Cluster {}, IQR = {}".format(cl, stats.iqr(this_df['roughness'])))
+        print("Cluster {}, median relief =  {}".format(cl, this_df['relief'].median()))
+        print("Cluster {}, IQR = {}".format(cl, stats.iqr(this_df['relief'])))
     print("========================================")
 
     # Do some stats, yo
@@ -639,11 +643,11 @@ def MakeCatchmentMetricsBoxPlot(DataDirectory, OutDirectory, fname_prefix, strea
     print(d, p)
     ks_dict[0] = [d, p]
     # slope
-    lists = master_df.groupby('cluster_id')['roughness'].apply(np.asarray)
+    lists = master_df.groupby('cluster_id')['relief'].apply(np.asarray)
     d, p = stats.ks_2samp(lists.iloc[0], lists.iloc[1])
     print(d, p)
     ks_dict[1] = [d, p]
-    # veg_height
+    # # veg_height
     # lists = master_df.groupby('cluster_id')['veg_height'].apply(np.asarray)
     # d, p = stats.ks_2samp(lists.iloc[0], lists.iloc[1])
     # print(d, p)
@@ -663,10 +667,10 @@ def MakeCatchmentMetricsBoxPlot(DataDirectory, OutDirectory, fname_prefix, strea
     # make a big subplot to allow sharing of axis labels
     fig.add_subplot(111, frameon=False)
     # hide tick and tick label of the big axes
-    plt.tick_params(labelcolor='none', top='off', bottom='off', left='off', right='off')
+    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
 
-    col_keys = ['mean_slope', 'roughness']
-    labels = ['Local gradient (m/m)', 'Local relief (m)']
+    col_keys = ['mean_slope', 'relief']
+    labels = ['Local gradient (m/m)', 'Catchment relief (m)']
     for i, this_ax in enumerate(axes):
         this_ax.set_ylabel(labels[i])
         this_ax.set_xlabel('')
@@ -717,5 +721,5 @@ def MakeCatchmentMetricsBoxPlot(DataDirectory, OutDirectory, fname_prefix, strea
         # ax.set_ylabel('Catchment relief (m)', fontsize=14)
 
     # plt.subplots_adjust(left=0.2)
-    plt.savefig(OutDirectory+fname_prefix+'_catchment_boxplot_SO{}.png'.format(stream_order), dpi=300)
+    plt.savefig(OutDirectory+fname_prefix+'_catchment_boxplot_SO{}.png'.format(stream_order), dpi=300, transparent=True)
     plt.clf()
