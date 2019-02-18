@@ -10,6 +10,10 @@ Copyright © 2018 Helmholtz Centre Potsdam GFZ German Research Centre for Geosci
 
 river-clusters is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. river-clusters is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
 
+## Citation
+
+Clubb, Fiona; Bookhagen, Bodo; Rheinwalt, Aljoscha (2019): river-clusters: Clustering river profiles from topographic data. V. 1.0. GFZ Data Services. http://doi.org/10.5880/fidgeo.2019.006
+
 ## Dependencies
 
 In order to run the clustering code we first of all need to extract all of the river profiles from a catchment using LSDTopoTools.  First of all make sure you have some dependencies installed:
