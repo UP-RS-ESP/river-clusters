@@ -2,6 +2,14 @@
 
 This repository contains code for clustering rivers in different catchments based on their long profiles. These instructions are for install on a linux machine. For help installing on other platforms, feel free to contact Fiona Clubb (details below).
 
+## Licence
+
+GNU General Public License, Version 3, 29 June 2007
+
+Copyright © 2018 Helmholtz Centre Potsdam GFZ German Research Centre for Geosciences, Potsdam, Germany and University of Kiel, Kiel, Germany.
+
+river-clusters is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. river-clusters is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/."
+
 ## Dependencies
 
 In order to run the clustering code we first of all need to extract all of the river profiles from a catchment using LSDTopoTools.  First of all make sure you have some dependencies installed:
