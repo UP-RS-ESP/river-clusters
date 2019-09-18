@@ -99,12 +99,11 @@ def PlotProfilesByCluster(DataDirectory, OutDirectory, fname_prefix, stream_orde
     cluster_df = pd.read_csv(OutDirectory+fname_prefix+'_profiles_clustered_SO{}.csv'.format(stream_order))
     clusters = cluster_df['cluster_id'].unique()
 
+    # set up a figure
+    fig, ax = plt.subplots(nrows=1,ncols=len(clusters), figsize=(6,4), sharex=True, sharey=True)
+
     #counter = 0
-    for cl in clusters:
-        # set up a figure
-        fig = plt.figure(1, facecolor='white',figsize=(4.92126,3.2))
-        gs = plt.GridSpec(100,100,bottom=0.15,left=0.1,right=0.9,top=0.9)
-        ax = fig.add_subplot(gs[5:100,10:95])
+    for i, cl in enumerate(clusters):
 
         this_df = cluster_df[cluster_df['cluster_id'] == cl]
         cl = int(this_df.iloc[0]['cluster_id'])
@@ -114,7 +113,7 @@ def PlotProfilesByCluster(DataDirectory, OutDirectory, fname_prefix, stream_orde
             for idx, src in enumerate(sources):
                 src_df = this_df[this_df['id'] == src]
                 src_df = src_df[src_df['slope'] != np.nan]
-                ax.plot(src_df['reg_dist'].values, src_df['slope'].values, lw=1, color=this_colour)
+                ax[i].plot(src_df['reg_dist'].values, src_df['slope'].values, lw=1, color=this_colour)
                 # save the colour to the cluster dataframe for later plots
                 #cluster_df.loc[cluster_df.cluster_id==cl, 'colour'] = colors[counter]
             #counter +=1
@@ -123,12 +122,12 @@ def PlotProfilesByCluster(DataDirectory, OutDirectory, fname_prefix, stream_orde
             # save the colour to the cluster dataframe for later plots
             #cluster_df.loc[cluster_df.cluster_id==cl, 'colour'] = threshold_color
 
-        ax.set_xlabel('Distance from source (m)')
-        ax.set_ylabel('Gradient')
-        ax.set_title('Cluster {}'.format(int(cl)))
+        ax[i].set_xlabel('Distance from source (m)')
+        ax[i].set_ylabel('Gradient')
+        ax[i].set_title('Cluster {}'.format(int(cl)))
 
-        plt.savefig(OutDirectory+fname_prefix+('_profiles_SO{}_CL{}.png').format(stream_order, int(cl)), dpi=300, transparent=True)
-        plt.clf()
+    plt.savefig(OutDirectory+fname_prefix+('_profiles_SO{}.png').format(stream_order), dpi=300, transparent=True)
+    #plt.clf()
 
     # write the clustered dataframe to csv
     #cluster_df.to_csv(DataDirectory+fname_prefix+'_profiles_upstream_clustered.csv', index=False)
@@ -183,9 +182,9 @@ def PlotMedianProfiles(DataDirectory, OutDirectory, fname_prefix, stream_order=1
 
     # save and clear the figure
     plt.savefig(OutDirectory+fname_prefix+('_profiles_median_SO{}.png'.format(stream_order)), dpi=300,transparent=True)
-    plt.clf()
-    plt.cla()
-    plt.close()
+    #plt.clf()
+    #plt.cla()
+    #plt.close()
 
 def PlotSlopeAreaAllProfiles(DataDirectory, OutDirectory, fname_prefix, stream_order=1, orientation='vertical', ref_theta=0.45, nbins=20, area_t = 1000):
     """
@@ -312,9 +311,9 @@ def PlotSlopeAreaAllProfiles(DataDirectory, OutDirectory, fname_prefix, stream_o
 
     # save and clear the figure
     plt.savefig(OutDirectory+fname_prefix+('_SA_median_SO{}.png'.format(stream_order)), dpi=300, transparent=True)
-    plt.clf()
-    plt.cla()
-    plt.close()
+    #plt.clf()
+    #plt.cla()
+    #plt.close()
 
 def PlotSlopeArea(DataDirectory, fname_prefix):
     """
@@ -393,9 +392,9 @@ def PlotSlopeArea(DataDirectory, fname_prefix):
 
     # save and clear the figure
     plt.savefig(DataDirectory+fname_prefix+'_SA_all.png', dpi=300, transparent=True)
-    plt.clf()
-    plt.cla()
-    plt.close()
+    #plt.clf()
+    #plt.cla()
+    #plt.close()
     #print("DONE")
 
 def PlotUniqueStreamsWithLength(DataDirectory, OutDirectory, fname_prefix, step=2, slope_window_size=25):
@@ -433,7 +432,7 @@ def PlotUniqueStreamsWithLength(DataDirectory, OutDirectory, fname_prefix, step=
     ax.set_ylabel('Number of unique channels')
 
     plt.savefig(OutDirectory+fname_prefix+'_n_channels_with_length.png', dpi=300, transparent=True)
-    plt.clf()
+    #plt.clf()
 
 def PlotLongitudinalProfiles(DataDirectory, fname_prefix):
     """
@@ -456,7 +455,7 @@ def PlotLongitudinalProfiles(DataDirectory, fname_prefix):
     ax.set_ylabel('Elevation (m)')
 
     plt.savefig(DataDirectory+fname_prefix+'_long_profiles.png', dpi=300, transparent=True)
-    plt.clf()
+    #plt.clf()
 
 def PlotTrunkChannel(DataDirectory, fname_prefix):
     """
@@ -485,7 +484,7 @@ def PlotTrunkChannel(DataDirectory, fname_prefix):
     plt.subplots_adjust(bottom=0.2, left=0.15)
 
     plt.savefig(DataDirectory+fname_prefix+'_trunk_profile.png', dpi=300, transparent=True)
-    plt.clf()
+    #plt.clf()
 
 def PlotElevDistanceTrunkChannel(DataDirectory, fname_prefix, stream_order=1):
     """
@@ -532,7 +531,7 @@ def PlotElevDistanceTrunkChannel(DataDirectory, fname_prefix, stream_order=1):
     #ax.set_ylim(0,35)
 
     plt.savefig(DataDirectory+fname_prefix+'_trunk_elev_dist.png', dpi=300, transparent=True)
-    plt.clf()
+    #plt.clf()
 
 def MakeBoxPlotByCluster(DataDirectory, OutDirectory, fname_prefix, stream_order=1):
     """
@@ -599,7 +598,7 @@ def MakeBoxPlotByCluster(DataDirectory, OutDirectory, fname_prefix, stream_order
     ax.set_ylabel('Gradient (m/m)', fontsize=14)
     plt.subplots_adjust(left=0.2)
     plt.savefig(OutDirectory+fname_prefix+'_boxplot_SO{}.png'.format(stream_order), dpi=300, transparent=True)
-    plt.clf()
+    #plt.clf()
 
 def MakeCatchmentMetricsBoxPlot(DataDirectory, OutDirectory, fname_prefix, stream_order=1):
     """
@@ -722,4 +721,4 @@ def MakeCatchmentMetricsBoxPlot(DataDirectory, OutDirectory, fname_prefix, strea
 
     # plt.subplots_adjust(left=0.2)
     plt.savefig(OutDirectory+fname_prefix+'_catchment_boxplot_SO{}.png'.format(stream_order), dpi=300, transparent=True)
-    plt.clf()
+    #plt.clf()

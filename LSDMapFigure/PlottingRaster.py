@@ -1736,6 +1736,7 @@ class MapFigure(object):
         """
         Shows the plot. Duh.
         """
+        fig = matplotlib.pyplot.gcf()
         self.fig.show()
 
     def save_fig(self,fig_width_inches = 4,FigFileName = 'TestFig.png',
@@ -1833,6 +1834,7 @@ class MapFigure(object):
         # I am returning the figure if wanted, otherwise I am saving the figure and clearing it
         if(return_fig):
             return fig
+            plt.show()
         else:
             # saving and closing
             fig.savefig(FigFileName, format=FigFormat, dpi=Fig_dpi, transparent=transparent)

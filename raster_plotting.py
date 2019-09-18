@@ -121,7 +121,7 @@ def PlotHillshadewithClusters(DataDirectory, OutDirectory, fname_prefix,stream_o
             ClusteredPoints = LSDP.LSDMap_PointData(this_df, data_type = "pandas", PANDEX = True)
             MF.add_point_data(ClusteredPoints,show_colourbar="False",zorder=100, unicolor=this_colour,manual_size=3)
 
-        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_hs_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, transparent=True) # Save the figure
+        fig = MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_hs_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, transparent=True, return_fig=True) # Save the figure
 
 def PlotLithologyWithClusters(DataDirectory, OutDirectory, fname_prefix, stream_order=1, shapefile_name = 'geol.shp', geol_field = 'geol'):
         """
@@ -176,7 +176,7 @@ def PlotLithologyWithClusters(DataDirectory, OutDirectory, fname_prefix, stream_
             ClusteredPoints = LSDP.LSDMap_PointData(this_df, data_type = "pandas", PANDEX = True)
             MF.add_point_data(ClusteredPoints,show_colourbar="False",zorder=100, unicolor=this_colour,manual_size=3)
 
-        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_lith_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, transparent=True) # Save the figure
+        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_lith_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, transparent=True, return_fig=True) # Save the figure
 
 
 def PlotRasterLithologyWithClusters(DataDirectory, OutDirectory, fname_prefix, stream_order=1, geol_raster = 'geol'):
@@ -216,7 +216,7 @@ def PlotRasterLithologyWithClusters(DataDirectory, OutDirectory, fname_prefix, s
 
         #geology
         LithName = geol_raster
-        print("The geology raster is"+LithName)
+        print("The geology raster is "+LithName)
         MF.add_drape_image(LithName, DataDirectory, colourmap=plt.cm.jet, alpha=0.5, show_colourbar = False, discrete_cmap=True, cbar_type=int,mask_value=0)
 
         clusters = cluster_df.cluster_id.unique()
@@ -230,7 +230,7 @@ def PlotRasterLithologyWithClusters(DataDirectory, OutDirectory, fname_prefix, s
             ClusteredPoints = LSDP.LSDMap_PointData(this_df, data_type = "pandas", PANDEX = True)
             MF.add_point_data(ClusteredPoints,show_colourbar="False",zorder=100, unicolor=this_colour,manual_size=2.5)
 
-        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_lith_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, transparent=True) # Save the figure
+        MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = OutDirectory+fname_prefix+'_lith_clusters_SO{}.png'.format(stream_order), FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, transparent=True, return_fig=True) # Save the figure
 
 def PlotRasterLithology(DataDirectory, fname_prefix, geol_raster = 'geol'):
         """
@@ -392,7 +392,7 @@ def PlotKsnFromSlopeArea(DataDirectory, fname_prefix, theta=0.45, cbar_loc='righ
     #plt.show()
 
     MF.save_fig(fig_width_inches = fig_width_inches, FigFileName = DataDirectory+fname_prefix+'_ksn.png', FigFormat='png', Fig_dpi = 300, fixed_cbar_characters=6, adjust_cbar_characters=False, axis_style='Thin', transparent=True) # Save the figure
-    plt.clf()
+    #plt.clf()
 
 
 if __name__ == '__main__':

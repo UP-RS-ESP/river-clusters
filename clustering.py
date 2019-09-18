@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
+plt.ioff()
 import numpy as np
 import pandas as pd
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster, set_link_color_palette
 from scipy import stats
 import math
 import plotting as pl
+import sys
 
 #---------------------------------------------------------------------#
 # ANALYSIS FUNCTIONS
@@ -231,9 +233,9 @@ def GetProfilesByStreamOrder(DataDirectory, fname_prefix, df,step=2,slope_window
     # make a plot of the gradient vs. distance from source aligned to the outlet with
     # the resampled distance frame
     # set up a figure
-    fig = plt.figure(1, facecolor='white')
+    fig1 = plt.figure(1, facecolor='white')
     gs = plt.GridSpec(100,100,bottom=0.15,left=0.1,right=0.9,top=0.9)
-    ax = fig.add_subplot(gs[5:100,10:95])
+    ax1 = fig1.add_subplot(gs[5:100,10:95])
 
     # only keep the nodes belonging to the corresponding stream order
     so_df = df[df['stream_order'] == stream_order]
@@ -287,7 +289,7 @@ def GetProfilesByStreamOrder(DataDirectory, fname_prefix, df,step=2,slope_window
                 rows_list.append(this_row)
 
             # plot this profile
-            ax.plot(reg_dist, reg_slope, lw=1)
+            ax1.plot(reg_dist, reg_slope, lw=1)
 
     # change the array back to a dataframe
     cols = list(df.columns.values)
@@ -298,10 +300,11 @@ def GetProfilesByStreamOrder(DataDirectory, fname_prefix, df,step=2,slope_window
     thinned_df.to_csv(DataDirectory+fname_prefix+'_profiles_SO{}.csv'.format(stream_order), index=False)
 
     # now save the figure
-    ax.set_xlabel('Distance from source (m)')
-    ax.set_ylabel('Gradient')
-    plt.savefig(DataDirectory+fname_prefix+'_profiles_SO{}.png'.format(stream_order), dpi=300)
-    plt.clf()
+    ax1.set_xlabel('Distance from source (m)')
+    ax1.set_ylabel('Gradient')
+    plt.show()
+    #plt.savefig(DataDirectory+fname_prefix+'_profiles_SO{}.png'.format(stream_order), dpi=300)
+    #plt.clf()
 
     return thinned_df
 
@@ -387,7 +390,7 @@ def ClusterProfilesVaryingLength(DataDirectory, OutDirectory, fname_prefix, df, 
     Author: AR, FJC
     """
     print ("Now I'm going to do some hierarchical clustering...")
-    np.set_printoptions(threshold='nan')
+    np.set_printoptions(threshold=sys.maxsize)
 
     #sort the dataframe based on max distance from outlet for each source id.
 
@@ -450,13 +453,14 @@ def ClusterProfilesVaryingLength(DataDirectory, OutDirectory, fname_prefix, df, 
 
     source_ids = df['id'].unique()
 
+    #plt.figure()
     #plt.title('Hierarchical Clustering Dendrogram')
     plt.ylabel('Dissimilarity ($d_R$)', fontsize=14)
     R = dendrogram(ln, color_threshold=thr+0.00001, above_threshold_color=threshold_color,no_labels=True)
 
     plt.axhline(y = thr, color = 'r', ls = '--')
     plt.savefig(OutDirectory+fname_prefix+"_dendrogram_SO{}.png".format(stream_order), dpi=300)
-    plt.clf()
+    #plt.clf()
 
     df.to_csv(OutDirectory+fname_prefix+'_profiles_clustered_SO{}.csv'.format(stream_order), index=False)
 
